@@ -1,16 +1,14 @@
-FROM python:3.12-slim-buster
+FROM python:3.14-rc-alpine
 
-# Install system packages
-RUN apt-get update && apt-get install -y awscli && apt-get clean
+RUN apt update -y && apt install awscli -y
 
-# Set working directory
 WORKDIR /app
 
-# Copy code
 COPY . /app
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
+RUN pip install --upgrade accelerate
+RUN pip uninstall -y transformers accelerate
+RUN pip install transformers accelerate
 
-# Run the FastAPI app with uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD [ "python3", "app.py" ]

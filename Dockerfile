@@ -1,14 +1,14 @@
 FROM python:3.14-rc-alpine
 
-RUN apt update -y && apt install awscli -y
+# Use apk to install awscli and required dependencies
+RUN apk update && apk add --no-cache aws-cli
 
 WORKDIR /app
 
-COPY . /app
+COPY requirements.txt .
 
 RUN pip install -r requirements.txt
-RUN pip install --upgrade accelerate
-RUN pip uninstall -y transformers accelerate
-RUN pip install transformers accelerate
 
-CMD [ "python3", "app.py" ]
+COPY . .
+
+CMD ["python", "app.py"]
